@@ -11,14 +11,29 @@ export class ReservationListComponent implements OnInit {
 
   reservations: Reservation[] = [];
 
-  constructor(private reservationService: ReservationService){}
+  constructor(private reservationService: ReservationService) { }
 
+  //without http client
+  // ngOnInit(): void {
+  //   this.reservations = this.reservationService.getReservations();
+  // }
+
+  //with http client
   ngOnInit(): void {
-    this.reservations = this.reservationService.getReservations();
+    this.reservationService.getReservations().subscribe(reservations => {
+      this.reservations = reservations;
+    });
+
+    console.log(this.reservations);
   }
 
-  deleteReservation(id: string){
-    this.reservationService.deleteReservation(id);
-  }
+  // deleteReservation(id: string) {
+  //   this.reservationService.deleteReservation(id);
+  // }
 
+  deleteReservation(id: string) {
+    this.reservationService.deleteReservation(id).subscribe(() => {
+      console.log("Delete is processed.")
+    });
+  }
 }

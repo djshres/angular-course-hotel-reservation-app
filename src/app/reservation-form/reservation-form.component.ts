@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReservationService } from '../reservation/reservation.service';
 import { Reservation } from '../models/reservation';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -17,7 +17,7 @@ export class ReservationFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private reservationService: ReservationService,
     private router: Router,
-    private activatedRoute: ActivatedRoute){
+    private activatedRoute: ActivatedRoute) {
 
   }
 
@@ -32,32 +32,62 @@ export class ReservationFormComponent implements OnInit {
 
     let id = this.activatedRoute.snapshot.paramMap.get('id')
 
-    if(id){
-      let reservation = this.reservationService.getReservation(id)
+    // if(id){
+    //   let reservation = this.reservationService.getReservation(id)
 
-      if(reservation)
-        this.reservationForm.patchValue(reservation)
+    //   if(reservation)
+    //     this.reservationForm.patchValue(reservation)
+    // }
+
+    if (id) {
+      this.reservationService.getReservation(id).subscribe(reservation => {
+        if (reservation)
+          this.reservationForm.patchValue(reservation)
+      })
     }
   }
 
+  // onSubmit() {
+  //   if (this.reservationForm.valid) {
+
+  //     let reservation: Reservation = this.reservationForm.value;
+
+  //     let id = this.activatedRoute.snapshot.paramMap.get('id')
+
+  //     if (id) {
+  //       // Update
+  //       this.reservationService.updateReservation(id, reservation)
+  //     } else {
+  //       // New
+  //       this.reservationService.addReservation(reservation)
+
+  //     }
+
+  //     this.router.navigate(['/list'])
+  //   }
+  // }
+
   onSubmit() {
-    if(this.reservationForm.valid){
+    if (this.reservationForm.valid) {
 
       let reservation: Reservation = this.reservationForm.value;
 
       let id = this.activatedRoute.snapshot.paramMap.get('id')
 
-      if(id){
+      if (id) {
         // Update
-        this.reservationService.updateReservation(id, reservation)
+        this.reservationService.updateReservation(id, reservation).subscribe(() => {
+          console.log("Update is processed!")
+        })
       } else {
         // New
-        this.reservationService.addReservation(reservation)   
+        this.reservationService.addReservation(reservation).subscribe(() => {
+          console.log("Add is processed")
+        })
 
       }
 
       this.router.navigate(['/list'])
     }
   }
-
 }
